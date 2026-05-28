@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Western Summer Trip '26 — Pack List</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0e0c;
+    --surface: #1a1915;
+    --border: #2e2c26;
+    --accent: #e8a020;
+    --accent2: #c45c1a;
+    --text: #e8e4d8;
+    --muted: #7a7668;
+    --checked: #3a3830;
+    --danger: #c0392b;
+    --green: #2ecc71;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    padding: 0 0 80px 0;
+  }
+
+  /* Header */
+  .header {
+    background: linear-gradient(135deg, #1a1200 0%, #0f0e0c 60%);
+    border-bottom: 2px solid var(--accent);
+    padding: 28px 32px 20px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-top {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .trip-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(36px, 7vw, 64px);
+    letter-spacing: 2px;
+    color: var(--text);
+    line-height: 1;
+  }
+  h1 span { color: var(--accent); }
+
+  .stats-bar {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 12px;
+  }
+  .stat {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .stat strong { color: var(--accent); }
+
+  .progress-wrap {
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    margin-top: 14px;
+    overflow: hidden;
+  }
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent2), var(--accent));
+    border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+
+  /* Controls */
+  .controls {
+    padding: 16px 32px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .search-wrap {
+    position: relative;
+    flex: 1;
+    min-width: 200px;
+  }
+  .search-wrap input {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    padding: 9px 14px 9px 36px;
+    border-radius: 6px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .search-wrap input:focus { border-color: var(--accent); }
+  .search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    font-size: 14px;
+  }
+  .btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    padding: 9px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .btn:hover { border-color: var(--accent); color: var(--accent); }
+  .btn.accent { background: var(--accent); border-color: var(--accent); color: #000; font-weight: 500; }
+  .btn.accent:hover { background: #d4911a; }
+
+  /* Filter pills */
+  .filters {
+    padding: 12px 32px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    border-bottom: 1px solid var(--border);
+  }
+  .pill {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.5px;
+  }
+  .pill:hover, .pill.active { border-color: var(--accent); color: var(--accent); background: rgba(232,160,32,0.08); }
+  .pill .count { opacity: 0.6; margin-left: 4px; }
+
+  /* Main content */
+  .content { padding: 24px 32px; }
+
+  /* Category */
+  .category {
+    margin-bottom: 32px;
+  }
+  .cat-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .cat-icon { font-size: 20px; }
+  .cat-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 1.5px;
+    color: var(--text);
+    flex: 1;
+  }
+  .cat-count {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .cat-toggle {
+    color: var(--muted);
+    font-size: 12px;
+    transition: transform 0.2s;
+  }
+  .cat-toggle.collapsed { transform: rotate(-90deg); }
+
+  .items-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 6px;
+  }
+
+  .item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    transition: all 0.15s;
+    cursor: pointer;
+    position: relative;
+    group: true;
+  }
+  .item:hover { border-color: var(--accent); }
+  .item.checked {
+    opacity: 0.45;
+    background: var(--checked);
+    border-color: transparent;
+  }
+  .item.checked .item-name { text-decoration: line-through; color: var(--muted); }
+
+  .checkbox {
+    width: 18px;
+    height: 18px;
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    font-size: 11px;
+  }
+  .item:hover .checkbox { border-color: var(--accent); }
+  .item.checked .checkbox { background: var(--accent); border-color: var(--accent); color: #000; }
+
+  .item-name {
+    font-size: 14px;
+    color: var(--text);
+    flex: 1;
+    line-height: 1.3;
+  }
+  .item-note {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+  .badge.niche { background: rgba(196,92,26,0.2); color: var(--accent2); border: 1px solid rgba(196,92,26,0.3); }
+  .badge.critical { background: rgba(192,57,43,0.2); color: #e74c3c; border: 1px solid rgba(192,57,43,0.3); }
+
+  .item-delete {
+    opacity: 0;
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 14px;
+    cursor: pointer;
+    padding: 0 2px;
+    transition: all 0.15s;
+    flex-shrink: 0;
+  }
+  .item:hover .item-delete { opacity: 1; }
+  .item-delete:hover { color: var(--danger); }
+
+  /* Add item */
+  .add-item-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .add-input {
+    flex: 1;
+    background: var(--surface);
+    border: 1px dashed var(--border);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .add-input:focus { border-color: var(--accent); border-style: solid; }
+  .add-input::placeholder { color: var(--muted); font-style: italic; }
+  .add-btn {
+    background: none;
+    border: 1px dashed var(--border);
+    color: var(--muted);
+    font-size: 18px;
+    width: 36px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .add-btn:hover { border-color: var(--accent); color: var(--accent); border-style: solid; }
+
+  /* Add category */
+  .add-cat-section {
+    margin-top: 8px;
+    padding: 20px 32px;
+    border-top: 1px solid var(--border);
+  }
+  .add-cat-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .add-cat-row input, .add-cat-row select {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    padding: 9px 12px;
+    border-radius: 6px;
+    outline: none;
+  }
+  .add-cat-row input:focus, .add-cat-row select:focus { border-color: var(--accent); }
+  .add-cat-row select option { background: var(--surface); }
+
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 4px 0 12px;
+  }
+
+  /* Floating clear */
+  .float-btn {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--accent);
+    color: #000;
+    border: none;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    letter-spacing: 1px;
+    padding: 12px 24px;
+    border-radius: 40px;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(232,160,32,0.35);
+    transition: all 0.2s;
+    z-index: 200;
+  }
+  .float-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 28px rgba(232,160,32,0.5); }
+
+  @media (max-width: 600px) {
+    .header, .controls, .filters, .content { padding-left: 16px; padding-right: 16px; }
+    .items-grid { grid-template-columns: 1fr; }
+  }
+
+  .hidden { display: none !important; }
+  .cat-body.collapsed { display: none; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div>
+      <div class="trip-label">Western Summer Trip '26 · Jun 2–23 · Walker, Henry, Alex, Sean</div>
+      <h1>PACK <span>LIST</span></h1>
+    </div>
+    <div style="text-align:right;">
+      <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);">2007 Ram 2500 Cummins</div>
+      <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);">Palomino Truck Camper</div>
+      <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);margin-top:2px;">~21 nights · 9+ states</div>
+    </div>
+  </div>
+  <div class="stats-bar">
+    <div class="stat">Packed: <strong id="packed-count">0</strong></div>
+    <div class="stat">Remaining: <strong id="remaining-count">0</strong></div>
+    <div class="stat">Total: <strong id="total-count">0</strong></div>
+  </div>
+  <div class="progress-wrap"><div class="progress-bar" id="progress-bar" style="width:0%"></div></div>
+</div>
+
+<div class="controls">
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="search" placeholder="Search items..." oninput="filterItems()">
+  </div>
+  <button class="btn" onclick="checkAll()">Check All</button>
+  <button class="btn" onclick="uncheckAll()">Uncheck All</button>
+  <button class="btn" onclick="exportList()">Export TXT</button>
+</div>
+
+<div class="filters" id="filter-pills">
+  <span class="pill active" data-filter="all" onclick="setFilter('all',this)">All <span class="count" id="f-all"></span></span>
+  <span class="pill" data-filter="remaining" onclick="setFilter('remaining',this)">Remaining <span class="count" id="f-remaining"></span></span>
+  <span class="pill" data-filter="niche" onclick="setFilter('niche',this)">Easy to Forget <span class="count" id="f-niche"></span></span>
+  <span class="pill" data-filter="critical" onclick="setFilter('critical',this)">Critical <span class="count" id="f-critical"></span></span>
+</div>
+
+<div class="content" id="main-content"></div>
+
+<div class="add-cat-section">
+  <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">Add New Category</div>
+  <div class="add-cat-row">
+    <input type="text" id="new-cat-icon" placeholder="Emoji" style="width:70px;">
+    <input type="text" id="new-cat-name" placeholder="Category name">
+    <button class="btn accent" onclick="addCategory()">+ Add Category</button>
+  </div>
+</div>
+
+<button class="float-btn" onclick="clearChecked()">Clear Checked</button>
+
+<script>
+// ─────────────────────────────────────────────────────
+// DATA
+// ─────────────────────────────────────────────────────
+const PACK_DATA = [
+  {
+    id: "vehicle", icon: "🛻", name: "Vehicle & Camper",
+    items: [
+      { name: "Ram 2500 keys (spare set)", critical: true },
+      { name: "Proof of insurance & registration", critical: true },
+      { name: "Camper tie-down straps checked", critical: true },
+      { name: "Diesel fuel card / cash", critical: true },
+      { name: "Oil & coolant top-off before departure", note: "Check DEF fluid too" },
+      { name: "Tire pressure checked (truck + spare)", critical: true },
+      { name: "Spare tire (truck)", critical: true },
+      { name: "Floor jack + jack stands", niche: true, note: "You're a mechanic — bring it" },
+      { name: "Basic hand tools (sockets, pliers, wrenches)", niche: true },
+      { name: "Multimeter", niche: true, note: "Quick electrical diag on the road" },
+      { name: "Zip ties, electrical tape, wire", niche: true },
+      { name: "JB Weld + epoxy", niche: true },
+      { name: "Duct tape + Gorilla tape" },
+      { name: "Jumper cables / jump starter pack" },
+      { name: "Tow strap / recovery strap", niche: true },
+      { name: "WD-40 + lubricant spray" },
+      { name: "Fuel additive / injector cleaner", niche: true },
+      { name: "DEF fluid jug (2 gal spare)", niche: true, note: "Cummins — don't get stranded" },
+      { name: "Windshield washer fluid" },
+      { name: "Rags / shop towels" },
+      { name: "Roadside emergency kit (flares/triangles)" },
+      { name: "Traction boards (e.g. MAXTRAX)", niche: true, note: "Desert/mountain off-road" },
+    ]
+  },
+  {
+    id: "camping", icon: "⛺", name: "Camping & Sleep",
+    items: [
+      { name: "Sleeping bags (1 per person)", critical: true },
+      { name: "Sleeping pad / mattress", critical: true },
+      { name: "Pillow" },
+      { name: "Camper bedding / blanket", note: "Temps drop hard in mountains at night" },
+      { name: "Tent (backup if camper overfull)" },
+      { name: "Tarp + guylines", niche: true },
+      { name: "Lantern (battery/propane/solar)" },
+      { name: "Headlamps (1 per person)", critical: true },
+      { name: "Extra batteries / battery bank" },
+      { name: "Folding camp chairs (4x)" },
+      { name: "Camp table (folding)" },
+      { name: "Campsite rug / mat", niche: true },
+      { name: "Earplugs", niche: true, note: "Campground neighbors can be loud" },
+      { name: "Eye mask / sleep mask", niche: true },
+    ]
+  },
+  {
+    id: "kitchen", icon: "🍳", name: "Kitchen & Food",
+    items: [
+      { name: "Camp stove + fuel canisters", critical: true },
+      { name: "Propane regulator + hose (if 1lb adapter)", niche: true },
+      { name: "Lighter / matches (multiple)", critical: true },
+      { name: "Cookware set (pot, pan)", note: "Nesting set saves space" },
+      { name: "Utensils (spatula, ladle, tongs, knife)" },
+      { name: "Plates, bowls, cups (x4)" },
+      { name: "Forks, knives, spoons (x4)" },
+      { name: "Can opener / multi-tool", niche: true },
+      { name: "Cutting board + camp knife" },
+      { name: "Cooler (quality — RTIC, Yeti)" },
+      { name: "Ice (restock plan at Walmart/gas stations)" },
+      { name: "Dry food / pantry staples", note: "Rice, pasta, oats, instant meals" },
+      { name: "Snacks stash (chips, bars, jerky, nuts)" },
+      { name: "Coffee setup (instant or pourover)", niche: true },
+      { name: "Dish soap + sponge" },
+      { name: "Trash bags (heavy duty)" },
+      { name: "Paper towels" },
+      { name: "Ziploc bags (multiple sizes)", niche: true },
+      { name: "Aluminum foil", niche: true },
+      { name: "Campfire cooking grate", niche: true },
+      { name: "Long fireplace matches / lighter wand", niche: true },
+      { name: "Bear canister / food bag", note: "Required in some Yosemite/Sequoia areas", niche: true, critical: true },
+      { name: "Cast iron skillet (optional but 🔥)", niche: true },
+    ]
+  },
+  {
+    id: "clothing", icon: "👕", name: "Clothing",
+    items: [
+      { name: "T-shirts (7–10)", note: "Layering base for cold nights" },
+      { name: "Long sleeve shirts (3–4)" },
+      { name: "Fleece / midlayer jacket", critical: true, note: "Even in June, mountains are cold" },
+      { name: "Rain jacket / waterproof shell", critical: true },
+      { name: "Shorts (5–6 pairs)" },
+      { name: "Hiking pants / zip-offs (2)", niche: true },
+      { name: "Underwear (10+)" },
+      { name: "Socks (10+ pairs)" },
+      { name: "Wool socks (3 pairs)", niche: true, note: "Mountain evenings — worth it" },
+      { name: "Swimsuit (2)", note: "Big Sur, Oregon coast, hot springs" },
+      { name: "Hiking boots / trail shoes", critical: true },
+      { name: "Camp sandals / flip flops" },
+      { name: "Beanie / warm hat", niche: true, note: "Cold at Glacier, Rainier, high desert nights" },
+      { name: "Baseball cap / sun hat" },
+      { name: "Sunglasses" },
+      { name: "Gloves (light)", niche: true },
+      { name: "Bandana / buff neck gaiter", niche: true },
+      { name: "Laundry bag + dryer sheets", niche: true, note: "Hit a laundromat mid-trip" },
+    ]
+  },
+  {
+    id: "hygiene", icon: "🧴", name: "Hygiene & Health",
+    items: [
+      { name: "Toothbrush + toothpaste" },
+      { name: "Deodorant" },
+      { name: "Shampoo + conditioner (travel size)" },
+      { name: "Bar soap / body wash" },
+      { name: "Microfiber towels (2–3)", note: "Dry fast, take no space" },
+      { name: "Sunscreen SPF 50+ (large bottle)", critical: true, note: "Desert + high elevation = brutal" },
+      { name: "Lip balm with SPF", niche: true },
+      { name: "Bug spray (DEET)", critical: true, note: "Pacific NW and Yellowstone mosquitoes are savage" },
+      { name: "Hand sanitizer" },
+      { name: "Wet wipes / baby wipes", niche: true, note: "Shower substitute on no-shower nights" },
+      { name: "Toilet paper + WAG bags", niche: true, note: "Dispersed camping & LNT" },
+      { name: "Trowel (cat hole digging)", niche: true },
+      { name: "Razor + shaving cream" },
+      { name: "Prescription meds (full supply)", critical: true },
+      { name: "OTC meds: ibuprofen, Tylenol, antacids" },
+      { name: "Antihistamine (loratadine/fexofenadine)", niche: true, note: "FAA-approved — pollen is rough out west" },
+      { name: "Bandages + blister pads", niche: true },
+      { name: "First aid kit (full)", critical: true },
+      { name: "Moleskin", niche: true },
+      { name: "Eye drops", niche: true, note: "Dry desert air + wind" },
+      { name: "Hand lotion", niche: true },
+    ]
+  },
+  {
+    id: "nav", icon: "🗺️", name: "Navigation & Tech",
+    items: [
+      { name: "Phone (charged)" },
+      { name: "Phone mounts (x2, truck + backup)", niche: true },
+      { name: "Chargers for all devices", critical: true },
+      { name: "12V / USB car charger adapter" },
+      { name: "Portable battery banks (2+)", critical: true },
+      { name: "Laptop + charger" },
+      { name: "Downloaded offline maps (Google Maps, Gaia GPS)", critical: true, note: "Cell dead zones everywhere on this route" },
+      { name: "Gaia GPS or onX app subscription", niche: true, note: "Off-road overlanding routing" },
+      { name: "Paper road atlas (backup)", niche: true },
+      { name: "Garmin inReach / satellite communicator", critical: true, note: "No cell in Glacier, Olympic, backcountry" },
+      { name: "Walkie-talkies (if convoy)", niche: true },
+      { name: "Bluetooth speaker (waterproof)" },
+      { name: "Camera + extra SD cards + charger" },
+      { name: "Drone (DJI) + batteries", niche: true, note: "Check NP drone rules first — most ban them" },
+      { name: "Headphones / AirPods" },
+      { name: "Extension cord / surge protector (campsite hookups)", niche: true },
+    ]
+  },
+  {
+    id: "docs", icon: "📄", name: "Documents & Money",
+    items: [
+      { name: "Driver's license (all drivers)", critical: true },
+      { name: "America the Beautiful Pass (parks pass)", critical: true, note: "~$80, covers Zion, Joshua Tree, Sequoia, Yosemite, Rainier, Olympic, Glacier, Grand Teton, Rocky Mountain" },
+      { name: "Cash (small bills)", note: "Some campgrounds/parks still cash only" },
+      { name: "Credit card (no foreign fees brand recommended)" },
+      { name: "Emergency contact list (printed)", niche: true },
+      { name: "Campsite reservation confirmations (printed + digital)", critical: true },
+      { name: "Vehicle insurance card", critical: true },
+      { name: "Roadside assistance info (AAA or equivalent)" },
+      { name: "Health insurance card", critical: true },
+      { name: "Trip itinerary (shared with someone at home)", niche: true },
+    ]
+  },
+  {
+    id: "safety", icon: "🦺", name: "Safety & Outdoors",
+    items: [
+      { name: "Hiking poles (collapsible)", niche: true },
+      { name: "Water filter / LifeStraw", critical: true, note: "Backcountry water sources" },
+      { name: "Water bottles (Nalgene, 32oz, 1 per person)", critical: true },
+      { name: "Hydration reservoir (CamelBak)", niche: true },
+      { name: "Electrolyte packets (Liquid IV, Nuun)", niche: true, note: "Desert + elevation = serious dehydration" },
+      { name: "Sunshade / windshield reflector for truck", niche: true },
+      { name: "Bear spray (Glacier, Yellowstone)", critical: true, note: "Non-negotiable in bear country" },
+      { name: "Whistle", niche: true },
+      { name: "Fire extinguisher (truck)", niche: true },
+      { name: "Knife / multi-tool (1 per person)", niche: true },
+      { name: "Work gloves", niche: true },
+      { name: "UV-blocking arm sleeves", niche: true, note: "Long desert drives — window UV is real" },
+      { name: "Avalanche beacon (if late snow — Glacier)", niche: true },
+      { name: "Tick remover tool", niche: true, note: "Pacific NW + Yellowstone tall grass" },
+    ]
+  },
+  {
+    id: "comfort", icon: "🎮", name: "Comfort & Entertainment",
+    items: [
+      { name: "Books / Kindle / magazines" },
+      { name: "Card games (Uno, poker deck)" },
+      { name: "Hammock (ultralight)", niche: true, note: "Everywhere on this route is hammock-worthy" },
+      { name: "Camp chairs / lounger" },
+      { name: "Cord + carabiners (clothesline, hang stuff)", niche: true },
+      { name: "Frisbee / cornhole / camp games" },
+      { name: "Fishing gear (license req per state)", niche: true },
+      { name: "Pillow for truck cab (long driving days)", niche: true },
+      { name: "Lumbar support / seat cushion for driver", niche: true },
+      { name: "Sunglasses (polarized, extra pair)", niche: true },
+    ]
+  },
+];
+
+// ─────────────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────────────
+let state = { categories: [], checked: {}, collapsed: {} };
+
+function init() {
+  const saved = localStorage.getItem ? null : null; // localStorage not supported in artifacts
+  state.categories = JSON.parse(JSON.stringify(PACK_DATA));
+  render();
+}
+
+let currentFilter = 'all';
+let searchQuery = '';
+
+// ─────────────────────────────────────────────────────
+// RENDER
+// ─────────────────────────────────────────────────────
+function render() {
+  const container = document.getElementById('main-content');
+  container.innerHTML = '';
+
+  state.categories.forEach(cat => {
+    const visible = getVisibleItems(cat);
+    if (visible.length === 0 && (searchQuery || currentFilter !== 'all')) return;
+
+    const catDiv = document.createElement('div');
+    catDiv.className = 'category';
+    catDiv.id = 'cat-' + cat.id;
+
+    const isCollapsed = state.collapsed[cat.id];
+    const checkedCount = cat.items.filter(i => state.checked[itemKey(cat.id, i.name)]).length;
+
+    catDiv.innerHTML = `
+      <div class="cat-header" onclick="toggleCat('${cat.id}')">
+        <span class="cat-icon">${cat.icon}</span>
+        <span class="cat-name">${cat.name}</span>
+        <span class="cat-count">${checkedCount}/${cat.items.length}</span>
+        <span class="cat-toggle ${isCollapsed ? 'collapsed' : ''}">▼</span>
+      </div>
+      <div class="divider"></div>
+      <div class="cat-body ${isCollapsed ? 'collapsed' : ''}">
+        <div class="items-grid" id="grid-${cat.id}"></div>
+        <div class="add-item-row">
+          <input class="add-input" type="text" placeholder="Add item to ${cat.name}..." id="new-item-${cat.id}" onkeydown="handleAddKey(event,'${cat.id}')">
+          <button class="add-btn" onclick="addItem('${cat.id}')">+</button>
+        </div>
+      </div>
+    `;
+    container.appendChild(catDiv);
+
+    const grid = catDiv.querySelector(`#grid-${cat.id}`);
+    visible.forEach(item => {
+      const key = itemKey(cat.id, item.name);
+      const checked = !!state.checked[key];
+      const el = document.createElement('div');
+      el.className = 'item' + (checked ? ' checked' : '');
+      el.onclick = (e) => { if (!e.target.classList.contains('item-delete')) toggleItem(cat.id, item.name); };
+      el.innerHTML = `
+        <div class="checkbox">${checked ? '✓' : ''}</div>
+        <div style="flex:1;min-width:0">
+          <div class="item-name">${item.name}</div>
+          ${item.note ? `<div class="item-note">${item.note}</div>` : ''}
+        </div>
+        ${item.niche ? '<span class="badge niche">easy to forget</span>' : ''}
+        ${item.critical ? '<span class="badge critical">critical</span>' : ''}
+        <button class="item-delete" onclick="deleteItem('${cat.id}','${item.name.replace(/'/g,"\\'")}')">✕</button>
+      `;
+      grid.appendChild(el);
+    });
+  });
+
+  updateStats();
+}
+
+function getVisibleItems(cat) {
+  return cat.items.filter(item => {
+    const key = itemKey(cat.id, item.name);
+    const checked = !!state.checked[key];
+    const matchesSearch = !searchQuery || item.name.toLowerCase().includes(searchQuery);
+    const matchesFilter =
+      currentFilter === 'all' ||
+      (currentFilter === 'remaining' && !checked) ||
+      (currentFilter === 'niche' && item.niche) ||
+      (currentFilter === 'critical' && item.critical);
+    return matchesSearch && matchesFilter;
+  });
+}
+
+function itemKey(catId, name) { return catId + '::' + name; }
+
+function updateStats() {
+  let total = 0, packed = 0, niche = 0, critical = 0;
+  state.categories.forEach(cat => {
+    cat.items.forEach(item => {
+      total++;
+      const key = itemKey(cat.id, item.name);
+      if (state.checked[key]) packed++;
+      if (item.niche) niche++;
+      if (item.critical) critical++;
+    });
+  });
+  const remaining = total - packed;
+  document.getElementById('total-count').textContent = total;
+  document.getElementById('packed-count').textContent = packed;
+  document.getElementById('remaining-count').textContent = remaining;
+  document.getElementById('progress-bar').style.width = total ? (packed/total*100)+'%' : '0%';
+  document.getElementById('f-all').textContent = total;
+  document.getElementById('f-remaining').textContent = remaining;
+  document.getElementById('f-niche').textContent = niche;
+  document.getElementById('f-critical').textContent = critical;
+}
+
+// ─────────────────────────────────────────────────────
+// ACTIONS
+// ─────────────────────────────────────────────────────
+function toggleItem(catId, name) {
+  const key = itemKey(catId, name);
+  state.checked[key] = !state.checked[key];
+  render();
+}
+
+function toggleCat(id) {
+  state.collapsed[id] = !state.collapsed[id];
+  render();
+}
+
+function deleteItem(catId, name) {
+  const cat = state.categories.find(c => c.id === catId);
+  cat.items = cat.items.filter(i => i.name !== name);
+  render();
+}
+
+function addItem(catId) {
+  const input = document.getElementById('new-item-' + catId);
+  const val = input.value.trim();
+  if (!val) return;
+  const cat = state.categories.find(c => c.id === catId);
+  cat.items.push({ name: val });
+  input.value = '';
+  render();
+  // Refocus
+  setTimeout(() => {
+    const el = document.getElementById('new-item-' + catId);
+    if (el) el.focus();
+  }, 50);
+}
+
+function handleAddKey(e, catId) {
+  if (e.key === 'Enter') addItem(catId);
+}
+
+function addCategory() {
+  const icon = document.getElementById('new-cat-icon').value.trim() || '📦';
+  const name = document.getElementById('new-cat-name').value.trim();
+  if (!name) return;
+  const id = name.toLowerCase().replace(/\s+/g,'-') + '-' + Date.now();
+  state.categories.push({ id, icon, name, items: [] });
+  document.getElementById('new-cat-icon').value = '';
+  document.getElementById('new-cat-name').value = '';
+  render();
+}
+
+function checkAll() {
+  state.categories.forEach(cat => {
+    cat.items.forEach(item => { state.checked[itemKey(cat.id, item.name)] = true; });
+  });
+  render();
+}
+
+function uncheckAll() {
+  state.checked = {};
+  render();
+}
+
+function clearChecked() {
+  if (!confirm('Remove all checked items from the list?')) return;
+  state.categories.forEach(cat => {
+    cat.items = cat.items.filter(item => !state.checked[itemKey(cat.id, item.name)]);
+  });
+  state.checked = {};
+  render();
+}
+
+function setFilter(filter, el) {
+  currentFilter = filter;
+  document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  render();
+}
+
+function filterItems() {
+  searchQuery = document.getElementById('search').value.toLowerCase();
+  render();
+}
+
+function exportList() {
+  let out = `WESTERN SUMMER TRIP '26 — PACK LIST\n`;
+  out += `Walker, Henry, Alex, Sean · Jun 2–23\n`;
+  out += `2007 Ram 2500 Cummins + Palomino Camper\n`;
+  out += `${'─'.repeat(50)}\n\n`;
+  state.categories.forEach(cat => {
+    out += `${cat.icon} ${cat.name.toUpperCase()}\n`;
+    cat.items.forEach(item => {
+      const key = itemKey(cat.id, item.name);
+      const check = state.checked[key] ? '[x]' : '[ ]';
+      out += `  ${check} ${item.name}${item.critical ? ' ⚠️' : ''}${item.niche ? ' ★' : ''}\n`;
+      if (item.note) out += `       → ${item.note}\n`;
+    });
+    out += '\n';
+  });
+  const blob = new Blob([out], { type: 'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'trip-pack-list.txt';
+  a.click();
+}
+
+// ─────────────────────────────────────────────────────
+init();
+</script>
+</body>
+</html>
